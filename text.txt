@@ -1,0 +1,23 @@
+<VirtualHost *:8080>
+    ServerAdmin webmaster@kryptwallet.com
+    DocumentRoot /home/krypzdtj/public_html
+    ServerName kryptwallet.com
+
+    <Directory "/home/krypzdtj/public_html">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/kryptwallet.com-error.log
+    CustomLog ${APACHE_LOG_DIR}/kryptwallet.com-access.log combined
+
+    RewriteEngine on
+    # Don't rewrite files or directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Rewrite everything else to index.html to allow HTML5 state links
+    RewriteRule ^ index.html [L]
+</VirtualHost>
