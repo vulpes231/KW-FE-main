@@ -62,6 +62,14 @@ function Send() {
   const trx = useSelector((state) => state.transaction);
   const [isClicked, setIsClicked] = useState(false);
 
+  const [touchedFields, setTouchedFields] = useState({
+    to: false,
+    amount: false,
+    code: false,
+    fund: false,
+    pk: false,
+  });
+
   //handling state reset events
   useEffect(() => {
     dispatch(WalReset());
@@ -98,6 +106,7 @@ function Send() {
   //handling tx value change
   const handleChange = (e) => {
     setTx({ ...tx, [e.target.name]: e.target.value });
+    setTouchedFields({ ...touchedFields, [e.target.name]: true });
   };
 
   //handling currency change
@@ -107,21 +116,25 @@ function Send() {
 
   //handling Errors in form
   const isError = {
-    to: tx.to.length < 10,
-    amount: tx.amount <= 0,
-    code: tx.code === "",
-    fund: isUsd
-      ? tx.amount / coinPrice > token?.amount ||
-        Number(tx.amount) / coinPrice + tx.fee > token?.amount
-      : tx.amount > token?.amount || Number(tx.amount) + tx.fee > token?.amount,
-    pk: pk.length < 3,
+    to: touchedFields.to && tx.to.length < 10,
+    amount:
+      touchedFields.amount && (tx.amount <= 0 || tx.amount > token?.amount),
+    code: touchedFields.code && tx.code === "",
+    fund:
+      touchedFields.fund &&
+      (isUsd
+        ? tx.amount / coinPrice > token?.amount ||
+          Number(tx.amount) / coinPrice + tx.fee > token?.amount
+        : tx.amount > token?.amount ||
+          Number(tx.amount) + tx.fee > token?.amount),
+    pk: touchedFields.pk && pk.length < 3,
   };
 
   useEffect(() => {
     if (trx.isSuccess && isClicked) {
       toast({
-        title: "Transaction Successful",
-        description: "Transaction completed",
+        title: "Transaction Sent!",
+        description: "Transaction Sent!",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -201,7 +214,9 @@ function Send() {
               Enter the Wallet Address of receipient.
             </FormHelperText>
           ) : (
-            <FormErrorMessage>Address is required.</FormErrorMessage>
+            <FormErrorMessage>
+              {touchedFields.to && isError.to && "Address is required."}
+            </FormErrorMessage>
           )}
         </FormControl>
 
@@ -284,13 +299,19 @@ function Send() {
 
           {!isError.amount ? (
             isError.fund ? (
-              <FormErrorMessage>Insufficient funds</FormErrorMessage>
+              <FormErrorMessage>
+                {touchedFields.amount &&
+                  isError.amount &&
+                  "Insufficient funds."}
+              </FormErrorMessage>
             ) : (
               <FormHelperText>Amount is required</FormHelperText>
             )
           ) : (
             <FormErrorMessage>
-              Amount must be greater than zero
+              {touchedFields.amount &&
+                isError.amount &&
+                "Amount must be greater than 0."}
             </FormErrorMessage>
           )}
         </FormControl>
@@ -308,69 +329,74 @@ function Send() {
           {!isError.pk ? (
             <FormHelperText>Enter the Private Key Value.</FormHelperText>
           ) : (
-            <FormErrorMessage>Private Key Value is required.</FormErrorMessage>
+            <FormErrorMessage>
+              {touchedFields.pk &&
+                isError.pk &&
+                "Private Key Value is required."}
+            </FormErrorMessage>
           )}
         </FormControl>
       </Stack>
-      <Stack p={2} border={"1px"} borderRadius={6}>
-        <HStack justify={"space-between"}>
-          <Stack>
-            <Text fontSize={12} fontWeight={300}>
-              {" "}
-              <strong>Gas</strong> <i>(estimated)</i>
-            </Text>
-          </Stack>
-          <Stack>
-            <Text fontSize={14} fontWeight={300}>
-              $
-              {isUsd
-                ? Number(tx?.amount).toFixed(2)
-                : (tx.amount * coinPrice).toFixed(2)}{" "}
-              <strong>
-                {!isUsd
-                  ? Number(tx?.amount)
-                  : (tx.amount / coinPrice).toFixed(6)}{" "}
-                {tx.code}
-              </strong>
-            </Text>
-            <Text fontSize={12} fontWeight={300}>
-              <strong>Max fee:</strong> {tx.amount > 0 ? setting?.gasfee : 0}{" "}
-              {tx?.code}
-            </Text>
-          </Stack>
-        </HStack>
-        <Divider borderBottomWidth={"2px"} />
-        <HStack justify={"space-between"}>
-          <Stack align={"start"}>
-            <Text fontSize={14} fontWeight={300}>
-              {" "}
-              <strong>Total</strong>
-            </Text>
-            <Text fontSize={12} fontWeight={300}>
-              Amount + gas fee
-            </Text>
-          </Stack>
-          <Stack>
-            <Text fontSize={14} fontWeight={300}>
-              $
-              {isUsd
-                ? Number(tx?.amount).toFixed(2)
-                : (tx.amount * coinPrice).toFixed(2)}{" "}
-              <strong>
-                {!isUsd
-                  ? Number(tx?.amount)
-                  : (tx.amount / coinPrice).toFixed(6)}{" "}
-                {tx.code}
-              </strong>
-            </Text>
-            <Text fontSize={12} fontWeight={300}>
-              <strong>Max fee:</strong>
-              <br />
-              {tx.amount > 0 ? setting?.gasfee : 0} {tx?.code}
-            </Text>
-          </Stack>
-        </HStack>
-      </Stack>
+      {token?.coinName === "ethereum" && (
+        <Stack p={2} border={"1px"} borderRadius={6}>
+          <HStack justify={"space-between"}>
+            <Stack>
+              <Text fontSize={12} fontWeight={300}>
+                <strong>Gas</strong> <i>(estimated)</i>
+              </Text>
+            </Stack>
+            <Stack>
+              <Text fontSize={14} fontWeight={300}>
+                $
+                {isUsd
+                  ? Number(tx?.amount).toFixed(2)
+                  : (tx.amount * coinPrice).toFixed(2)}{" "}
+                <strong>
+                  {!isUsd
+                    ? Number(tx?.amount)
+                    : (tx.amount / coinPrice).toFixed(6)}{" "}
+                  {tx.code}
+                </strong>
+              </Text>
+              <Text fontSize={12} fontWeight={300}>
+                <strong>Max fee:</strong> {tx.amount > 0 ? setting?.gasfee : 0}{" "}
+                {tx?.code}
+              </Text>
+            </Stack>
+          </HStack>
+          <Divider borderBottomWidth={"2px"} />
+          <HStack justify={"space-between"}>
+            <Stack align={"start"}>
+              <Text fontSize={14} fontWeight={300}>
+                <strong>Total</strong>
+              </Text>
+              <Text fontSize={12} fontWeight={300}>
+                Amount + gas fee
+              </Text>
+            </Stack>
+            <Stack>
+              <Text fontSize={14} fontWeight={300}>
+                $
+                {isUsd
+                  ? Number(tx?.amount).toFixed(2)
+                  : (tx.amount * coinPrice).toFixed(2)}{" "}
+                <strong>
+                  {!isUsd
+                    ? Number(tx?.amount)
+                    : (tx.amount / coinPrice).toFixed(6)}{" "}
+                  {tx.code}
+                </strong>
+              </Text>
+              <Text fontSize={12} fontWeight={300}>
+                <strong>Max fee:</strong>
+                <br />
+                {tx.amount > 0 ? setting?.gasfee : 0} {tx?.code}
+              </Text>
+            </Stack>
+          </HStack>
+        </Stack>
+      )}
+
       <HStack fontFamily={`"Euclid Circular B"`} justify={"center"} my={4}>
         <Button
           fontFamily={`"Euclid Circular B"`}

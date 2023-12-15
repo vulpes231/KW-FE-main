@@ -94,7 +94,7 @@ function ReceiveComp({ tok, tokList }) {
             To interact with decentralized applications using Krypt Wallet,
             you’ll need {token?.code} in your wallet.
             <Stack align={"center"} mt={4}>
-              <Text>Recieve</Text>
+              <Text>Receive</Text>
               <QRCode value={token?.address} />
               <Text>Scan address to recieve payment</Text>
             </Stack>

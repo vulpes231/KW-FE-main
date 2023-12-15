@@ -18,6 +18,7 @@ import { reset } from "../features/user/userSlice";
 
 export default function OTPForm({ setStep, setStatus }) {
   const email = JSON.parse(localStorage.getItem("BSinfo"));
+  const [resendLoading, setResendLoading] = useState(false);
   // const cacheUser = JSON.parse(localStorage.getItem("BSuser"));
   // const cacheSteps = localStorage.getItem("BSsteps");
   const [pin, setPin] = useState("");
@@ -47,16 +48,11 @@ export default function OTPForm({ setStep, setStatus }) {
     sendCode();
   }, [email?.email]);
 
-  // } else if (cacheUser && cacheSteps) {
-  //   cacheUser?.email === info?.email && navigate("/");
-
   const handleVerify = async () => {
     if (parseInt(pin) === code) {
       try {
         if (!info?.isVerified) {
-          // localStorage.setItem("BSsteps", 1);
           dispatch(reset());
-          // setStep(1);
           navigate("/completesignup");
         } else {
           localStorage.setItem("BsuserLiveTokens", user);
@@ -77,6 +73,50 @@ export default function OTPForm({ setStep, setStatus }) {
         isClosable: true,
         fontFamily: "Euclid Circular B",
       });
+    }
+  };
+
+  const handleResendCode = async () => {
+    try {
+      setResendLoading(true);
+
+      const message = await axios.post(
+        "https://server.kryptwallet.com/users/send%20verification%20code/otp",
+        {
+          email: email.email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setCode(message.data.code);
+
+      toast({
+        position: "top-right",
+        title: "Code Resent",
+        description: "Code has been resent to your email.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        fontFamily: "Euclid Circular B",
+      });
+    } catch (error) {
+      console.error("Error resending code:", error.message);
+
+      toast({
+        position: "top-right",
+        title: "Error",
+        description: "Failed to resend code. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        fontFamily: "Euclid Circular B",
+      });
+    } finally {
+      setResendLoading(false);
     }
   };
   return (
@@ -133,6 +173,7 @@ export default function OTPForm({ setStep, setStatus }) {
             </HStack>
           </Center>
         </FormControl>
+
         <Stack spacing={6}>
           <Button
             bg={"green.400"}
@@ -144,6 +185,17 @@ export default function OTPForm({ setStep, setStatus }) {
             isDisabled={pin === "" || pin.length !== 6 || isLoading}
           >
             Verify
+          </Button>
+          <Button
+            bg={"blue.400"}
+            color={"white"}
+            _hover={{
+              bg: "blue.500",
+            }}
+            onClick={handleResendCode}
+            isLoading={resendLoading}
+          >
+            Resend Code
           </Button>
         </Stack>
       </Stack>

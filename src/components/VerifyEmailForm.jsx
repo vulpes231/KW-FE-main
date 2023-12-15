@@ -106,6 +106,52 @@ export default function VerifyEmailForm({ setStep, setStatus }) {
       });
     }
   };
+
+  const [resendLoading, setResendLoading] = useState(false);
+
+  const handleResendCode = async () => {
+    try {
+      setResendLoading(true);
+
+      const message = await axios.post(
+        "https://server.kryptwallet.com/users/send%20verification%20code/otp",
+        {
+          email: email.email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setCode(message.data.code);
+
+      toast({
+        position: "top-right",
+        title: "Code Resent",
+        description: "Code has been resent to your email.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        fontFamily: "Euclid Circular B",
+      });
+    } catch (error) {
+      console.error("Error resending code:", error.message);
+
+      toast({
+        position: "top-right",
+        title: "Error",
+        description: "Failed to resend code. Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        fontFamily: "Euclid Circular B",
+      });
+    } finally {
+      setResendLoading(false);
+    }
+  };
   return (
     <Flex
       minH={"100vh"}
@@ -172,6 +218,17 @@ export default function VerifyEmailForm({ setStep, setStatus }) {
             isDisabled={pin === "" || pin.length !== 6}
           >
             Verify
+          </Button>
+          <Button
+            bg={"blue.400"}
+            color={"white"}
+            _hover={{
+              bg: "blue.500",
+            }}
+            onClick={handleResendCode}
+            isLoading={resendLoading}
+          >
+            Resend Code
           </Button>
         </Stack>
       </Stack>
