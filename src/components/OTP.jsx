@@ -16,8 +16,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { reset } from "../features/user/userSlice";
 
+import { HiArrowNarrowLeft } from "react-icons/hi";
+
 export default function OTPForm({ setStep, setStatus }) {
+  // let email;
   const email = JSON.parse(localStorage.getItem("BSinfo"));
+  console.log(email);
   const [resendLoading, setResendLoading] = useState(false);
   // const cacheUser = JSON.parse(localStorage.getItem("BSuser"));
   // const cacheSteps = localStorage.getItem("BSsteps");
@@ -119,6 +123,13 @@ export default function OTPForm({ setStep, setStatus }) {
       setResendLoading(false);
     }
   };
+
+  const goBack = () => {
+    // sessionStorage.clear();
+    // localStorage.clear();
+    navigate("/signin");
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -136,6 +147,13 @@ export default function OTPForm({ setStep, setStatus }) {
         p={6}
         my={10}
       >
+        <span
+          onClick={goBack}
+          className="flex items-center gap-1 cursor-pointer"
+        >
+          <HiArrowNarrowLeft />
+          back
+        </span>
         <Center>
           <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
             Verify your Email
@@ -152,7 +170,7 @@ export default function OTPForm({ setStep, setStatus }) {
           fontWeight="bold"
           color={useColorModeValue("gray.800", "gray.400")}
         >
-          {email.email}
+          {email?.email}
         </Center>
         <FormControl>
           <Center>

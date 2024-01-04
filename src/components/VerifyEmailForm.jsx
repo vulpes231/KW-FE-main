@@ -13,10 +13,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { reset, verifyUser } from "../features/user/userSlice";
 import axios from "axios";
+import { HiArrowNarrowLeft } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 
 export default function VerifyEmailForm({ setStep, setStatus }) {
   const email = JSON.parse(localStorage.getItem("BSuser"));
-  console.log(email);
+  // console.log(email);
+  const navigate = useNavigate();
   const [pin, setPin] = useState("");
   const [code, setCode] = useState("");
   const dispatch = useDispatch();
@@ -152,6 +155,14 @@ export default function VerifyEmailForm({ setStep, setStatus }) {
       setResendLoading(false);
     }
   };
+
+  const goBack = () => {
+    // sessionStorage.clear();
+    // localStorage.clear();
+
+    navigate("/signup");
+  };
+
   return (
     <Flex
       minH={"100vh"}
@@ -170,6 +181,13 @@ export default function VerifyEmailForm({ setStep, setStatus }) {
         p={6}
         my={{ base: 0, md: 10 }}
       >
+        <span
+          onClick={goBack}
+          className="flex items-center gap-1 cursor-pointer"
+        >
+          <HiArrowNarrowLeft />
+          back
+        </span>
         <Center>
           <Heading lineHeight={1.1} fontSize={{ base: "2xl", md: "3xl" }}>
             Verify your Email

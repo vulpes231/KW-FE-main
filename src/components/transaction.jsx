@@ -43,9 +43,10 @@ function Transaction({ tx }) {
             fontSize={[12, 14]}
             mt={"0 !important"}
             fontWeight={700}
-            color={tx?.status === "pending" ? "yellow.500" : "green.500"}
+            color={tx?.status.includes("pending") ? "yellow.500" : "green.500"}
           >
-            {tx?.status === "pending" ? "pending..." : "Confirmed"}
+            {/* {tx?.status === "pending" ? "pending..." : "Confirmed"} */}
+            {tx?.status}
           </Text>
         </Stack>
         <Text
