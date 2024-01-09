@@ -50,21 +50,9 @@ function DeskDash() {
   }, [dispatch, tx]);
 
   useEffect(() => {
-    // let Rtoken = wallet?.activatedCoins?.[0].coinName
-    //   .replace(" ", "-")
-    //   .toLowerCase();
-    // Rtoken = Rtoken === "xrp" ? "ripple" : Rtoken;
     isSuccess && dispatch(getWalletTransactions(wallet?.address));
     isSuccess && dispatch(reset()) && setValue(wallet?.address);
     isLoading && console.log("loading");
-    //     isSuccess &&
-    //       (async function () {
-    //         const Price = await axios.get(
-    //           `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${Rtoken}&order=market_cap_desc&per_page=100&page=1&sparkline=false
-    // `
-    //         );
-    //         setCoinPrice(Price.data[0]?.current_price);
-    //       })();
   }, [isLoading, isSuccess, message, wallets, wallet, dispatch, setValue]);
 
   useEffect(() => {
@@ -121,17 +109,12 @@ function DeskDash() {
         maxW={"full"}
       />
       <Stack gap={2} align={"center"} p={5}>
-        {/* <SkeletonCircle isLoaded={!isLoading}>
-          <Avatar size={"sm"} src={wallet?.activatedCoins?.[0]?.img} />
-        </SkeletonCircle> */}
         <Skeleton isLoaded={!isLoading}>
           <Heading
             fontWeight={500}
             fontFamily={`"Euclid Circular B"`}
             fontSize={32}
           >
-            {/* {Number(wallet?.activatedCoins?.[0]?.amount).toFixed(1) || 0}{" "}
-            {wallet?.activatedCoins?.[0]?.code} */}
             {NumberBeautify(
               `${values?.reduce((a, b) => a + b).toFixed(2)}`,
               "$"
@@ -139,20 +122,6 @@ function DeskDash() {
             USD
           </Heading>
         </Skeleton>
-        {/* <Skeleton isLoaded={!isLoading}>
-          <Text
-            marginTop={"0 !important"}
-            fontSize={16}
-            fontFamily={`"Euclid Circular B"`}
-            color={useColorModeValue("gray.500", "gray.300")}
-          >
-            {NumberBeautify(
-              `${(wallet?.activatedCoins?.[0]?.amount * coinPrice).toFixed(2)}`,
-              "$"
-            )}{" "}
-            USD
-          </Text>
-        </Skeleton> */}
       </Stack>
       <HStack gap={5} justify={"center"}>
         <ReceiveComp
@@ -238,6 +207,7 @@ function DeskDash() {
           </TabPanel>
         </TabPanels>
       </Tabs>
+
       <ImportCoin />
     </Container>
   );
