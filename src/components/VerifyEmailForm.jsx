@@ -18,8 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function VerifyEmailForm({ setStep, setStatus }) {
   const email = JSON.parse(localStorage.getItem("BSuser"));
-  // console.log(email);
-  const navigate = useNavigate();
+
   const [pin, setPin] = useState("");
   const [code, setCode] = useState("");
   const dispatch = useDispatch();
@@ -47,7 +46,7 @@ export default function VerifyEmailForm({ setStep, setStatus }) {
       }
       sendCode();
     }
-  }, []);
+  }, [email?.email]);
 
   useEffect(() => {
     isLoading && setStatus("loading");
@@ -157,10 +156,9 @@ export default function VerifyEmailForm({ setStep, setStatus }) {
   };
 
   const goBack = () => {
-    // sessionStorage.clear();
-    // localStorage.clear();
-
-    navigate("/signup");
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.reload();
   };
 
   return (

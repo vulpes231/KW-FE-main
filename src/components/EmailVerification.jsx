@@ -44,7 +44,7 @@ export default function VerifyEmailForm({ onClick }) {
       }
       sendCode();
     }
-  }, []);
+  }, [email?.email]);
 
   return (
     <Flex

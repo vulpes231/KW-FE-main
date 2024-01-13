@@ -13,20 +13,10 @@ import {
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+
 import Transaction from "./transaction";
 import NumberBeautify from "js-number-beautifier";
 import ReceiveComp from "./ReceiveComp";
-
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
 
 function CoinPage() {
   const { coin } = useParams();
@@ -43,8 +33,6 @@ function CoinPage() {
   const sendColor = useColorModeValue("green.500", "green.400");
   const { coinValues } = useSelector((state) => state.coin);
 
-  const [historicalData, setHistoricalData] = useState([]);
-
   useEffect(() => {
     let Rtoken = token?.coinName.replace(" ", "-").toLowerCase();
     Rtoken = Rtoken === "xrp" ? "ripple" : Rtoken;
@@ -54,24 +42,6 @@ function CoinPage() {
     let tok = coinValues?.find((coin) => coin?.id === Rtoken);
     setCoinPrice(tok?.current_price);
   }, [coinValues, token?.coinName]);
-
-  useEffect(() => {
-    const fetchHistoricalData = async () => {
-      try {
-        const response = await axios.get(
-          `YOUR_API_ENDPOINT/${coin}/historical_data`
-        );
-        // Assuming the API response contains an array of historical data objects
-        const data = response.data;
-        setHistoricalData(data);
-      } catch (error) {
-        console.error("Error fetching historical data:", error);
-        // Handle error state or show a message to the user
-      }
-    };
-
-    // fetchHistoricalData();
-  }, [coin]);
 
   return (
     <Container
@@ -142,18 +112,7 @@ function CoinPage() {
           </Text>
         </Stack>
       </HStack>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart
-          data={historicalData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        >
-          <XAxis dataKey="date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="value" stroke="#8884d8" />
-        </LineChart>
-      </ResponsiveContainer>
+
       <Stack
         fontFamily={`"Euclid Circular B"`}
         p={5}

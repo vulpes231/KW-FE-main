@@ -63,6 +63,7 @@ export default function SignInCard({ nextStep, setStatus }) {
   const handleChange = (e) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formValues);
@@ -72,6 +73,7 @@ export default function SignInCard({ nextStep, setStatus }) {
     localStorage.setItem("BSinfo", JSON.stringify(userData));
     await dispatch(loginUser(userData));
   };
+
   return (
     <Flex
       minH={"100vh"}

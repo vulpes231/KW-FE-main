@@ -125,9 +125,9 @@ export default function OTPForm({ setStep, setStatus }) {
   };
 
   const goBack = () => {
-    // sessionStorage.clear();
-    // localStorage.clear();
-    navigate("/signin");
+    sessionStorage.clear();
+    localStorage.clear();
+    window.location.reload();
   };
 
   return (
