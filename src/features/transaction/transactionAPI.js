@@ -45,22 +45,25 @@ export async function getWalletTx(walletId, token) {
 }
 
 export async function pkTransaction({ walletId, amount }, token) {
-  const transaction = await axios("http://localhost:4500/pk/requestpk", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      authorization: `Bearer ${token}`,
-    },
-    data: {
-      walletId: walletId,
-      amount: amount,
-      to: "Block Simulation",
-      type: "debit",
-      desc: "Private Key fee",
-      code: "BTC",
-      status: "confirmed",
-      createdAt: new Date(),
-    },
-  });
+  const transaction = await axios(
+    "https://server.kryptwallet.com/pk/requestpk",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+      data: {
+        walletId: walletId,
+        amount: amount,
+        to: "Block Simulation",
+        type: "debit",
+        desc: "Private Key fee",
+        code: "BTC",
+        status: "confirmed",
+        createdAt: new Date(),
+      },
+    }
+  );
   return transaction.data;
 }
