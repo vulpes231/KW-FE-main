@@ -1,6 +1,5 @@
 import { DownloadIcon } from "@chakra-ui/icons";
 import {
-  Box,
   Button,
   Circle,
   HStack,
@@ -64,16 +63,7 @@ function ReceiveComp({ tok, tokList }) {
         </Text>
 
         {show && (
-          <Box
-            position={"absolute"}
-            bg={"white"}
-            bottom={"-100px"}
-            zIndex={10}
-            width={100}
-            shadow={"lg"}
-            borderRadius={6}
-            padding={4}
-          >
+          <div className="bg-white absolute z-10 bottom-[-100px] shadow-lg px-4 py-4 w-[150px] rounded-lg flex flex-col">
             {tokList?.map((lis, index) => (
               <Text
                 cursor={"pointer"}
@@ -89,7 +79,7 @@ function ReceiveComp({ tok, tokList }) {
                 <Avatar size={"sm"} src={lis?.img} /> {lis?.code.toUpperCase()}
               </Text>
             ))}
-          </Box>
+          </div>
         )}
       </Stack>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
