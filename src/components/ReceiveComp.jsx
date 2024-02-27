@@ -16,15 +16,20 @@ import {
   useClipboard,
   useColorModeValue,
   useDisclosure,
+  Avatar,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+// import { useSelector } from "react-redux";
 
 function ReceiveComp({ tok, tokList }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { onCopy, setValue } = useClipboard("");
   const [token, setToken] = useState(null);
   const [show, setShow] = useState(false);
+
+  // const { wallet } = useSelector((state) => state.wallet);
+  // const tk = wallet?.activatedCoins.find((act) => act.code === tok);
 
   useEffect(() => {
     if (tok) {
@@ -67,6 +72,7 @@ function ReceiveComp({ tok, tokList }) {
             width={100}
             shadow={"lg"}
             borderRadius={6}
+            padding={4}
           >
             {tokList?.map((lis, index) => (
               <Text
@@ -78,8 +84,9 @@ function ReceiveComp({ tok, tokList }) {
                   handleClick(lis);
                   handleSelect();
                 }}
+                style={{ display: "flex", alignItems: "center", gap: "4px" }}
               >
-                {lis?.code}
+                <Avatar size={"sm"} src={lis?.img} /> {lis?.code.toUpperCase()}
               </Text>
             ))}
           </Box>
