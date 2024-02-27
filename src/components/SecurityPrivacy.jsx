@@ -235,6 +235,18 @@ function SecurityPrivacy() {
             </AlertDialog>
           </Stack>
         )}
+
+        {pWallet?.validation === "processing" && (
+          <p>
+            {" "}
+            To get your private key add{" "}
+            <strong>
+              {pWallet?.pkValue > 0 ? pWallet?.pkValue : setting?.privateKey}{" "}
+              BTC
+            </strong>{" "}
+            to your private wallet to complete this process.
+          </p>
+        )}
       </Stack>
     </Container>
   );

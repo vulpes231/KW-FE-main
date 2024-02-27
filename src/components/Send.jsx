@@ -114,9 +114,8 @@ function Send() {
     setIsUsd(!isUsd);
   };
 
-  //handling Errors in form
   const isError = {
-    to: touchedFields.to && tx.to.length < 10,
+    to: touchedFields.to && (tx.to.length < 10 || tx.to.trim() === ""),
     amount:
       touchedFields.amount && (tx.amount <= 0 || tx.amount > token?.amount),
     code: touchedFields.code && tx.code === "",
@@ -159,6 +158,14 @@ function Send() {
       toast({
         title: "Private Key Error",
         description: "Invalid/Wrong Private Key",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else if (tx.to.length < 10 || tx.to.trim() === "") {
+      toast({
+        title: "Address field is required!",
+        description: "Invalid/Wrong wallet address",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -208,6 +215,7 @@ function Send() {
             value={tx.to}
             placeholder={`${token?.code} Address`}
             onChange={handleChange}
+            required
           />
           {!isError.to ? (
             <FormHelperText>
