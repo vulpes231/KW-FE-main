@@ -74,7 +74,7 @@ function ReceiveComp({ tok, tokList }) {
                   handleClick(lis);
                   handleSelect();
                 }}
-                style={{ display: "flex", alignItems: "center", gap: "4px" }}
+                style={{ display: "flex", alignItems: "center", gap: "20px" }}
               >
                 <Avatar size={"sm"} src={lis?.img} /> {lis?.code.toUpperCase()}
               </Text>

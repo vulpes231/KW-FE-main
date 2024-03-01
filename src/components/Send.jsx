@@ -117,7 +117,10 @@ function Send() {
   const isError = {
     to: touchedFields.to && (tx.to.length < 10 || tx.to.trim() === ""),
     amount:
-      touchedFields.amount && (tx.amount <= 0 || tx.amount > token?.amount),
+      touchedFields.amount &&
+      (isUsd
+        ? tx.amount <= 0 || tx.amount > token?.amount * coinPrice
+        : tx.amount <= 0 || tx.amount > token?.amount),
     code: touchedFields.code && tx.code === "",
     fund:
       touchedFields.fund &&
@@ -298,7 +301,7 @@ function Send() {
                 ? "$" + NumberBeautify(`${(tx.amount * coinPrice).toFixed(2)}`)
                 : (tx.amount / coinPrice).toFixed(6) > 1
                 ? NumberBeautify(`${(tx.amount / coinPrice).toFixed(6)}`)
-                : (tx.amount / coinPrice).toFixed(6)}{" "}
+                : (tx.amount / coinPrice).toFixed(6)}
               <strong style={{ cursor: "pointer" }} onClick={handleSwitch}>
                 {isUsd ? tx.code : "USD"}
               </strong>
@@ -306,20 +309,12 @@ function Send() {
           </Stack>
 
           {!isError.amount ? (
-            isError.fund ? (
-              <FormErrorMessage>
-                {touchedFields.amount &&
-                  isError.amount &&
-                  "Insufficient funds."}
-              </FormErrorMessage>
-            ) : (
-              <FormHelperText>Amount is required</FormHelperText>
-            )
+            <FormHelperText>Amount is required</FormHelperText>
           ) : (
             <FormErrorMessage>
-              {touchedFields.amount &&
-                isError.amount &&
-                "Amount must be greater than 0."}
+              {touchedFields.amount && isError.amount && tx.amount <= 0
+                ? "Amount must be greater than 0."
+                : "Insufficient funds."}
             </FormErrorMessage>
           )}
         </FormControl>
