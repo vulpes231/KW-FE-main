@@ -61,7 +61,7 @@ const MainHeader = () => {
           className={
             !toggle
               ? "hidden"
-              : "flex flex-col gap-6 font-semibold absolute left-0 top-[70px] min-h-screen w-full items-center justify-center bg-white bg-opacity-90"
+              : "flex flex-col gap-6 font-semibold absolute left-0 top-[70px] min-h-screen w-full items-center justify-center bg-white"
           }
         >
           {links}

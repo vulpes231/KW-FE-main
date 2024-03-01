@@ -6,11 +6,42 @@ import {
   Circle,
   useColorModeValue,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 function Transaction({ tx }) {
+  const [currentValue, SetCurrentValue] = useState("BTC");
   const credColor = useColorModeValue("green.500", "green.400");
   const debColor = useColorModeValue("red.500", "red.400");
+  const { wallet } = useSelector((state) => state.wallet);
+  const { coinValues } = useSelector((state) => state.coin);
+  const token = wallet?.activatedCoins.find((act) => act.code === tx.code);
+
+  const [coinPrice, setCoinPrice] = useState(0);
+
+  //Getting Crypto conversion
+  useEffect(() => {
+    let Rtoken = token?.coinName.replace(" ", "-").toLowerCase();
+    Rtoken = Rtoken === "xrp" ? "ripple" : Rtoken;
+    Rtoken = Rtoken === "tron(trc20)" ? "tron" : Rtoken;
+    Rtoken = Rtoken === "tether-usdt" ? "tether" : Rtoken;
+    // console.log(Rtoken);
+    //     (async function () {
+    //       const Price = await axios.get(
+    //         `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${Rtoken}&order=market_cap_desc&per_page=100&page=1&sparkline=false
+    // `
+    //       );
+    //       console.log(Price.data);
+    //       setCoinPrice(Price.data[0]?.current_price);
+    //     })();
+    let tok = coinValues?.find((coin) => coin?.id === Rtoken);
+    setCoinPrice(tok?.current_price);
+  }, [coinValues, token?.coinName]);
+
+  const handleSwitch = () => {
+    SetCurrentValue((prev) => !prev);
+  };
+
   return (
     <Stack>
       <Text fontSize={[12, 14]} textAlign={"left"}>
@@ -45,7 +76,6 @@ function Transaction({ tx }) {
             fontWeight={700}
             color={tx?.status.includes("pending") ? "yellow.500" : "green.500"}
           >
-            {/* {tx?.status === "pending" ? "pending..." : "Confirmed"} */}
             {tx?.status}
           </Text>
         </Stack>
@@ -55,8 +85,11 @@ function Transaction({ tx }) {
           fontWeight={[700, 500]}
           flex={1}
           textAlign={"right"}
+          cursor={"pointer"}
+          onClick={handleSwitch}
         >
-          {tx?.amount} {tx?.code}
+          {currentValue ? tx?.amount : (tx?.amount * coinPrice).toFixed(2)}{" "}
+          {currentValue ? tx?.code : "USD"}
         </Text>
       </HStack>
     </Stack>
